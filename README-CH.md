@@ -13,39 +13,39 @@
 
 # Arena Benchmark
 
-**Arena Benchmark** is a C++ performance testing framework built on top of Google Benchmark, featuring beautiful table visualization and JSON export capabilities. It makes benchmark results more readable and professional.
+**Arena Benchmark** 是一个基于 Google Benchmark 的 C++ 性能测试框架，提供美观的表格可视化和 JSON 导出功能。它让性能测试结果更易读、更专业。
 
-English | [简体中文](README-CH.md)
+[English](README.md) | 简体中文
 
-## ✨ Features
+## ✨ 特性
 
-- 🎨 **Beautiful Table Output** - Unicode borders with color highlighting for best results
-- 📊 **Dual Views** - Detailed repetition logs and summary statistics tables
-- 📈 **Rich Metrics** - Automatic calculation of average time, throughput, time per item, etc.
-- 💾 **JSON Export** - Export results as structured JSON files for further analysis
-- 🔥 **Warm-up Support** - Support warm-up runs to exclude cold-start effects
-- 🎯 **Fluent API** - Method chaining for clean and elegant code
-- 🔧 **Flexible Configuration** - Customizable repetitions, time units, workload scales, etc.
+- 🎨 **美观的表格输出** - 使用 Unicode 边框和颜色高亮显示最佳结果
+- 📊 **双重视图** - 提供详细的重复日志和汇总统计表
+- 📈 **丰富的指标** - 自动计算平均时间、吞吐量、每项耗时等
+- 💾 **JSON 导出** - 将结果导出为结构化 JSON 文件，便于后续分析
+- 🔥 **预热支持** - 支持预热运行，排除冷启动影响
+- 🎯 **流式 API** - 链式调用，代码简洁优雅
+- 🔧 **灵活配置** - 支持自定义重复次数、时间单位、工作负载规模等
 
-## 📦 Dependencies
+## 📦 依赖
 
-The project uses CMake FetchContent to automatically manage dependencies:
+项目使用 CMake FetchContent 自动管理依赖：
 
-- [Google Benchmark](https://github.com/google/benchmark) - Core performance testing framework
-- [nlohmann/json](https://github.com/nlohmann/json) - JSON serialization
-- [tabulate](https://github.com/p-ranav/tabulate) - Table visualization
-- [fmt](https://github.com/fmtlib/fmt) - Formatting library
-- [termcolor](https://github.com/ikalnytskyi/termcolor) - Terminal color support
+- [Google Benchmark](https://github.com/google/benchmark) - 核心性能测试框架
+- [nlohmann/json](https://github.com/nlohmann/json) - JSON 序列化
+- [tabulate](https://github.com/p-ranav/tabulate) - 表格可视化
+- [fmt](https://github.com/fmtlib/fmt) - 格式化输出
+- [termcolor](https://github.com/ikalnytskyi/termcolor) - 终端颜色支持
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### Build the Project
+### 构建项目
 
 ```bash
 ./build.sh
 ```
 
-### Basic Example
+### 基础示例
 
 ```cpp
 #include <arena_benchmark/arena_benchmark.hpp>
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     std::iota(data.begin(), data.end(), 0);
     std::shuffle(data.begin(), data.end(), std::mt19937{42});
 
-    // Register benchmark
+    // 注册基准测试
     bench.register_benchmark("BM_StdSort",
         [&data](benchmark::State& state) {
             for (auto _ : state) {
@@ -71,12 +71,12 @@ int main(int argc, char** argv) {
                 benchmark::DoNotOptimize(copy);
             }
         })
-        .repetitions(3)                          // Repeat 3 times
-        .workload_scale(10000)                   // Workload scale
-        .time_unit(benchmark::kMicrosecond)      // Time unit
-        .extra_info("std::sort / 10K");          // Extra info
+        .repetitions(3)                          // 重复 3 次
+        .workload_scale(10000)                   // 工作负载规模
+        .time_unit(benchmark::kMicrosecond)      // 时间单位
+        .extra_info("std::sort / 10K");          // 额外信息
 
-    // Method chaining: warm up -> run -> export
+    // 链式调用：预热 -> 运行 -> 导出
     bench.warm_up(1)
          .run_all(argc, argv)
          .export_results(".");
@@ -85,125 +85,125 @@ int main(int argc, char** argv) {
 }
 ```
 
-## 📖 API Documentation
+## 📖 API 文档
 
-### ArenaBenchmark Class
+### ArenaBenchmark 类
 
-The main benchmark management class.
+主要的基准测试管理类。
 
-#### Methods
+#### 方法
 
 ##### `register_benchmark(name, func)`
 
-Register a benchmark test.
+注册一个基准测试。
 
-**Parameters:**
-- `name` (string) - Benchmark name
-- `func` (callable) - Test function that accepts `benchmark::State&` parameter
+**参数：**
+- `name` (string) - 基准测试名称
+- `func` (callable) - 测试函数，接受 `benchmark::State&` 参数
 
-**Returns:** `InstanceRegistration&` - For method chaining configuration
+**返回：** `InstanceRegistration&` - 用于链式配置
 
-**Example:**
+**示例：**
 ```cpp
 bench.register_benchmark("BM_MyTest",
     [](benchmark::State& state) {
         for (auto _ : state) {
-            // Test code
+            // 测试代码
         }
     });
 ```
 
 ##### `warm_up(num_warm_up_reps)`
 
-Set the number of warm-up runs. Warm-up results are shown in the repetition log but excluded from summary statistics.
+设置预热运行次数。预热结果会显示在重复日志中，但不计入汇总统计。
 
-**Parameters:**
-- `num_warm_up_reps` (int) - Number of warm-up runs, must be >= 0
+**参数：**
+- `num_warm_up_reps` (int) - 预热次数，必须 >= 0
 
-**Returns:** `ArenaBenchmark&` - Supports method chaining
+**返回：** `ArenaBenchmark&` - 支持链式调用
 
 ##### `run_all()` / `run_all(argc, argv)`
 
-Run all registered benchmarks.
+运行所有注册的基准测试。
 
-**Parameters:**
-- `argc`, `argv` (optional) - Command-line arguments for Google Benchmark configuration
+**参数：**
+- `argc`, `argv` (可选) - 命令行参数，用于 Google Benchmark 配置
 
-**Returns:** `ArenaBenchmark&` - Supports method chaining
+**返回：** `ArenaBenchmark&` - 支持链式调用
 
 ##### `export_results(output_root)`
 
-Export results as JSON files.
+将结果导出为 JSON 文件。
 
-**Parameters:**
-- `output_root` (path) - Output root directory, defaults to "."
+**参数：**
+- `output_root` (path) - 输出根目录，默认为 "."
 
-**Output Files:**
-- `<output_root>/benchmark_logs/benchmark_repetition_log_board.json` - Detailed logs
-- `<output_root>/benchmark_results/benchmark_summary_board.json` - Summary statistics
+**输出文件：**
+- `<output_root>/benchmark_logs/benchmark_repetition_log_board.json` - 详细日志
+- `<output_root>/benchmark_results/benchmark_summary_board.json` - 汇总统计
 
-**Returns:** `ArenaBenchmark&` - Supports method chaining
+**返回：** `ArenaBenchmark&` - 支持链式调用
 
-### InstanceRegistration Class
+### InstanceRegistration 类
 
-Benchmark configuration builder returned by `register_benchmark()`.
+基准测试配置构建器，由 `register_benchmark()` 返回。
 
-#### Methods
+#### 方法
 
 ##### `repetitions(n)`
 
-Set the number of repetitions for averaging.
+设置重复运行次数，用于计算平均值。
 
-**Parameters:**
-- `n` (int) - Number of repetitions
+**参数：**
+- `n` (int) - 重复次数
 
-**Returns:** `InstanceRegistration&`
+**返回：** `InstanceRegistration&`
 
 ##### `workload_scale(scale)`
 
-Set the workload scale for calculating derived metrics:
+设置工作负载规模，用于计算派生指标：
 - **items/sec** = workload_scale / real_time_per_iteration
 - **avg time/item** = real_time_per_iteration / workload_scale
 
-**Parameters:**
-- `scale` (size_t) - Workload scale, must be >= 1
+**参数：**
+- `scale` (size_t) - 工作负载规模，必须 >= 1
 
-**Returns:** `InstanceRegistration&`
+**返回：** `InstanceRegistration&`
 
-**Example:**
+**示例：**
 ```cpp
-// Sorting 10000 elements
+// 对 10000 个元素排序
 bench.register_benchmark("BM_Sort", ...)
-     .workload_scale(10000);  // Will display "X us/item" and "Y items/sec"
+     .workload_scale(10000);  // 将显示 "X us/item" 和 "Y items/sec"
 ```
 
 ##### `time_unit(unit)`
 
-Set the time unit.
+设置时间单位。
 
-**Parameters:**
-- `unit` (benchmark::TimeUnit) - Options:
+**参数：**
+- `unit` (benchmark::TimeUnit) - 可选值：
   - `benchmark::kNanosecond`
   - `benchmark::kMicrosecond`
   - `benchmark::kMillisecond`
   - `benchmark::kSecond`
 
-**Returns:** `InstanceRegistration&`
+**返回：** `InstanceRegistration&`
 
 ##### `extra_info(info)`
 
-Set extra information string displayed in result tables.
+设置额外信息字符串，显示在结果表格中。
 
-**Parameters:**
-- `info` (string) - Description text
+**参数：**
+- `info` (string) - 描述信息
 
-**Returns:** `InstanceRegistration&`
+**返回：** `InstanceRegistration&`
 
-## 📊 Output Format
+## 📊 输出格式
 
-### 1. Repetition Log Board
+### 1. Repetition Log Board（重复日志表）
 
-Shows detailed results for each run:
+显示每次运行的详细结果：
 
 ```
 ·────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────·
@@ -215,20 +215,20 @@ Shows detailed results for each run:
 │   BM_StdSort_Small  │   0  │  80220 │      0.01 ms     │      0.01 ms     │    0.0000 ms/item    │     114149328    │    N   │      std::sort / 1K     │
 ```
 
-**Column Descriptions:**
-- **Benchmark** - Test name
-- **Rep#** - Repetition index
-- **Iters** - Number of iterations automatically determined by Google Benchmark
-- **Real Time** - Actual wall-clock time
-- **CPU Time** - CPU time
-- **Avg Time/Item** - Average time per item (= Real Time / workload_scale)
-- **Items/sec** - Items processed per second (= workload_scale / Real Time)
-- **WarmUp** - Whether this is a warm-up run (Y/N)
-- **Extra Info** - Additional information
+**列说明：**
+- **Benchmark** - 测试名称
+- **Rep#** - 重复索引
+- **Iters** - Google Benchmark 自动确定的迭代次数
+- **Real Time** - 实际运行时间
+- **CPU Time** - CPU 时间
+- **Avg Time/Item** - 每项平均耗时（= Real Time / workload_scale）
+- **Items/sec** - 每秒处理项数（= workload_scale / Real Time）
+- **WarmUp** - 是否为预热运行（Y/N）
+- **Extra Info** - 额外信息
 
-### 2. Benchmark Summary Board
+### 2. Benchmark Summary Board（汇总统计表）
 
-Shows averaged results across multiple runs with highlighting for best and second-best:
+显示多次运行的平均结果，并高亮最佳和次佳：
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -240,11 +240,11 @@ Shows averaged results across multiple runs with highlighting for best and secon
 ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Highlighting Rules:**
-- 🔴 **Red Background** - Best result (shortest Real Time / highest Items/sec)
-- 🟡 **Yellow Background** - Second-best result
+**高亮规则：**
+- 🔴 **红色背景** - 最佳结果（Real Time 最短 / Items/sec 最高）
+- 🟡 **黄色背景** - 次佳结果
 
-### 3. JSON Export
+### 3. JSON 导出
 
 #### benchmark_repetition_log_board.json
 
@@ -293,27 +293,27 @@ Shows averaged results across multiple runs with highlighting for best and secon
 }
 ```
 
-## 🎯 Complete Examples
+## 🎯 完整示例
 
-Check the `examples/` directory for more examples:
+查看 `examples/` 目录获取更多示例：
 
-- `basic_example.cpp` - Basic usage example
-- `test_benchmark_summary.cpp` - Summary table test
-- `test_repetition_log_list.cpp` - Repetition log test
-- `test_result_exporter.cpp` - JSON export test
+- `basic_example.cpp` - 基础用法示例
+- `test_benchmark_summary.cpp` - 汇总表测试
+- `test_repetition_log_list.cpp` - 重复日志测试
+- `test_result_exporter.cpp` - JSON 导出测试
 
-Run an example:
+运行示例：
 
 ```bash
 ./build/examples/basic_example
 ```
 
-## 🔧 Advanced Usage
+## 🔧 高级用法
 
-### Custom Workload Scales
+### 自定义工作负载规模
 
 ```cpp
-// Test different data scales
+// 测试不同规模的数据
 bench.register_benchmark("BM_Sort_1K", ...)
      .workload_scale(1000);
 
@@ -324,67 +324,67 @@ bench.register_benchmark("BM_Sort_100K", ...)
      .workload_scale(100000);
 ```
 
-### Multiple Repetitions for Better Accuracy
+### 多次重复以提高准确性
 
 ```cpp
 bench.register_benchmark("BM_CriticalPath", ...)
-     .repetitions(10)  // Run 10 times and average
-     .warm_up(2);      // Warm up 2 times
+     .repetitions(10)  // 运行 10 次取平均
+     .warm_up(2);      // 预热 2 次
 ```
 
-### Using Different Time Units
+### 使用不同时间单位
 
 ```cpp
-// Nanosecond-level test
+// 纳秒级测试
 bench.register_benchmark("BM_FastOp", ...)
      .time_unit(benchmark::kNanosecond);
 
-// Millisecond-level test
+// 毫秒级测试
 bench.register_benchmark("BM_SlowOp", ...)
      .time_unit(benchmark::kMillisecond);
 ```
 
-### Passing Google Benchmark Arguments
+### 传递 Google Benchmark 参数
 
 ```bash
-# Run specific tests
+# 运行特定测试
 ./build/examples/basic_example --benchmark_filter=BM_StdSort.*
 
-# Set minimum run time
+# 设置最小运行时间
 ./build/examples/basic_example --benchmark_min_time=1.0
 
-# Show verbose output
+# 显示详细输出
 ./build/examples/basic_example --benchmark_verbose
 ```
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 arena-benchmark/
 ├── include/
 │   └── arena_benchmark/
-│       ├── arena_benchmark.hpp          # Main entry point
-│       ├── instance_registration.hpp    # Configuration builder
-│       ├── benchmark_results.hpp        # Result data structures
-│       ├── repetition_log_list.hpp      # Repetition log list
-│       ├── summary_table.hpp            # Summary table
-│       ├── result_exporter.hpp          # JSON exporter
-│       └── *_visualizer.hpp             # Visualization components
-├── examples/                            # Example code
-├── build.sh                             # Build script
-└── CMakeLists.txt                       # CMake configuration
+│       ├── arena_benchmark.hpp          # 主入口
+│       ├── instance_registration.hpp    # 配置构建器
+│       ├── benchmark_results.hpp        # 结果数据结构
+│       ├── repetition_log_list.hpp      # 重复日志列表
+│       ├── summary_table.hpp            # 汇总表
+│       ├── result_exporter.hpp          # JSON 导出器
+│       └── *_visualizer.hpp             # 可视化组件
+├── examples/                            # 示例代码
+├── build.sh                             # 构建脚本
+└── CMakeLists.txt                       # CMake 配置
 ```
 
-## 🤝 Contributing
+## 🤝 贡献
 
-Issues and Pull Requests are welcome!
+欢迎提交 Issue 和 Pull Request！
 
-## 📄 License
+## 📄 许可证
 
-This project is licensed under the [MIT License](LICENSE).
+本项目采用 [MIT License](LICENSE) 许可证。
 
-## 🙏 Acknowledgments
+## 🙏 致谢
 
-- [Google Benchmark](https://github.com/google/benchmark) - Core performance testing functionality
-- [tabulate](https://github.com/p-ranav/tabulate) - Beautiful table output
-- [nlohmann/json](https://github.com/nlohmann/json) - JSON support
+- [Google Benchmark](https://github.com/google/benchmark) - 提供核心性能测试功能
+- [tabulate](https://github.com/p-ranav/tabulate) - 提供美观的表格输出
+- [nlohmann/json](https://github.com/nlohmann/json) - 提供 JSON 支持
