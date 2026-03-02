@@ -15,8 +15,6 @@
 
 **Arena Benchmark** is a C++ performance testing framework built on top of Google Benchmark, featuring beautiful table visualization and JSON export capabilities. It makes benchmark results more readable and professional.
 
-English | [简体中文](README-CH.md)
-
 ## ✨ Features
 
 - 🎨 **Beautiful Table Output** - Unicode borders with color highlighting for best results
