@@ -2,3 +2,4 @@
 .codex
 benchmark_logs/
 benchmark_results/
+build/
