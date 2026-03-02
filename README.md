@@ -15,8 +15,6 @@
 
 **Arena Benchmark** is a C++ performance testing framework built on top of Google Benchmark, featuring beautiful table visualization and JSON export capabilities. It makes benchmark results more readable and professional.
 
-English | [简体中文](README-CH.md)
-
 ## ✨ Features
 
 - 🎨 **Beautiful Table Output** - Unicode borders with color highlighting for best results
@@ -205,15 +203,7 @@ Set extra information string displayed in result tables.
 
 Shows detailed results for each run:
 
-```
-·────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────·
-│                                                             Benchmark Repetition Log Board                                                             │
-·────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────·
-│      Benchmark      │ Rep# │  Iters │     Real Time    │     CPU Time     │     Avg Time/Item    │     Items/sec    │ WarmUp │        Extra Info       │
-·─────────────────────·──────·────────·──────────────────·──────────────────·──────────────────────·──────────────────·────────·─────────────────────────·
-│   BM_StdSort_Small  │   0  │  78974 │      0.01 ms     │      0.01 ms     │    0.0000 ms/item    │     113297446    │    Y   │      std::sort / 1K     │
-│   BM_StdSort_Small  │   0  │  80220 │      0.01 ms     │      0.01 ms     │    0.0000 ms/item    │     114149328    │    N   │      std::sort / 1K     │
-```
+![Benchmark Repetition Log Board](assets/benchmark_repetition_log_board.png)
 
 **Column Descriptions:**
 - **Benchmark** - Test name
@@ -230,15 +220,7 @@ Shows detailed results for each run:
 
 Shows averaged results across multiple runs with highlighting for best and second-best:
 
-```
-╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║                                                          Benchmark Summary Board                                                         ║
-║ ·─────────────────────·──────·──────────────────·──────────────────·──────────────────────·──────────────────·─────────────────────────────────────· ║
-║ │      Benchmark      │ Reps │     Real Time    │     CPU Time     │     Avg Time/Item    │     Items/sec    │        Extra Info       │ ║
-║ ·─────────────────────·──────·──────────────────·──────────────────·──────────────────────·──────────────────·─────────────────────────────────────· ║
-║ │   BM_StdSort_Small  │   3  │      0.01 ms     │      0.01 ms     │    0.0000 ms/item    │  117,711,092.00  │      std::sort / 1K     │ ║
-╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-```
+![Benchmark Summary Board](assets/benchmark_summary_board.png)
 
 **Highlighting Rules:**
 - 🔴 **Red Background** - Best result (shortest Real Time / highest Items/sec)
