@@ -31,31 +31,31 @@ FetchContent_Declare(
 FetchContent_Declare(
     argparse
 	GIT_REPOSITORY https://github.com/p-ranav/argparse.git
-	GIT_TAG "3eda91b2e1ce7d569f84ba295507c4cd8fd96910"
+	GIT_TAG "v3.2"
 )
 
 FetchContent_Declare(
     termcolor
 	GIT_REPOSITORY https://github.com/ikalnytskyi/termcolor.git
-	GIT_TAG "b3cb0f365f8435588df7a6b12a82b2ac5fc1fe95"
+	GIT_TAG "v2.1.0"
 )
 
 FetchContent_Declare(
     fmt
 	GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-	GIT_TAG "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+	GIT_TAG "12.1.0"
 )
 
 FetchContent_Declare(
     benchmark
     GIT_REPOSITORY https://github.com/google/benchmark.git
-    GIT_TAG "192ef10025eb2c4cdd392bc502f0c852196baa48"
+    GIT_TAG "v1.9.5"
 )
 
 FetchContent_Declare(
     tabulate
     GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
-    GIT_TAG "b35db4cce50a4b296290b0ae827305cdeb23751e"
+    GIT_TAG "v1.5"
 )
 
 # --- Google Benchmark Configuration ---
