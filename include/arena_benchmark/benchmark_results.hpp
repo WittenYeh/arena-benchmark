@@ -19,6 +19,7 @@
 #include <cstdint>
 #include <variant>
 #include <sstream>
+#include <stdexcept>
 
 namespace arena_benchmark {
 
@@ -48,7 +49,17 @@ private:
 struct SingleRepetitionResult {
 public:
     SingleRepetitionResult() {
+        _data["instance_name"] = std::string();
+        _data["repetition_index"] = 0;
+        _data["iterations"] = static_cast<int64_t>(0);
+        _data["real_time"] = 0.0;
+        _data["cpu_time"] = 0.0;
         _data["is_warm_up"] = false;
+        _data["items_per_second"] = static_cast<int64_t>(0);
+        _data["time_unit"] = std::string("us");
+        _data["extra_info"] = std::string();
+        _data["error_occurred"] = false;
+        _data["error_message"] = std::string();
         _data["avg_time_per_item"] = 0.0;
     }
 
@@ -80,6 +91,9 @@ public:
     // Compute and set avg_time_per_item from real_time/workload_scale.
     // The output keeps the same time_unit as real_time (e.g. us/item).
     auto compute_avg_time_per_item(size_t workload_scale) -> SingleRepetitionResult& {
+        if (workload_scale == 0) {
+            throw std::invalid_argument("workload_scale must be >= 1");
+        }
         avg_time_per_item(real_time() / static_cast<double>(workload_scale));
         return *this;
     }
@@ -143,7 +157,14 @@ private:
 struct MultiRepetitionSummary {
 public:
     MultiRepetitionSummary() {
+        _data["instance_name"] = std::string();
+        _data["repetitions"] = 0;
+        _data["avg_real_time"] = 0.0;
+        _data["avg_cpu_time"] = 0.0;
         _data["avg_time_per_item"] = 0.0;
+        _data["avg_items_per_second"] = 0.0;
+        _data["time_unit"] = std::string("us");
+        _data["extra_info"] = std::string();
     }
 
     // Value type for flexible data storage

@@ -61,6 +61,11 @@ public:
     template<typename Func>
     auto register_benchmark(const std::string& name, Func&& func)
         -> InstanceRegistration& {
+        auto duplicated = std::find_if(_instances.begin(), _instances.end(),
+            [&](const InstanceRegistration& inst) { return inst.name() == name; });
+        if (duplicated != _instances.end()) {
+            throw std::invalid_argument("Duplicate benchmark name: " + name);
+        }
         _instances.emplace_back(
             name,
             std::function<void(benchmark::State&)>(std::forward<Func>(func))
@@ -182,7 +187,9 @@ private:
                     break;
                 }
             }
-            assert(matched_inst != nullptr);
+            if (matched_inst == nullptr) {
+                throw std::runtime_error("Internal error: benchmark instance not found for " + bm_name);
+            }
 
             double avg_real = 0, avg_cpu = 0, avg_items = 0;
             for (auto& r : results) {

@@ -25,36 +25,37 @@ include(FetchContent)
 FetchContent_Declare(
 	nlohmann_json
 	URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+	URL_HASH SHA256=8c4b26bf4b422252e13f332bc5e388ec0ab5c3443d24399acb675e68278d341f
 )
 
 FetchContent_Declare(
-	argparse
+    argparse
 	GIT_REPOSITORY https://github.com/p-ranav/argparse.git
-	GIT_TAG "v3.2"
+	GIT_TAG "3eda91b2e1ce7d569f84ba295507c4cd8fd96910"
 )
 
 FetchContent_Declare(
-	termcolor
+    termcolor
 	GIT_REPOSITORY https://github.com/ikalnytskyi/termcolor.git
-	GIT_TAG "v2.1.0"
+	GIT_TAG "b3cb0f365f8435588df7a6b12a82b2ac5fc1fe95"
 )
 
 FetchContent_Declare(
-	fmt
+    fmt
 	GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-	GIT_TAG "12.1.0"
+	GIT_TAG "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
 )
 
 FetchContent_Declare(
     benchmark
     GIT_REPOSITORY https://github.com/google/benchmark.git
-    GIT_TAG "v1.9.5"
+    GIT_TAG "192ef10025eb2c4cdd392bc502f0c852196baa48"
 )
 
 FetchContent_Declare(
     tabulate
     GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
-    GIT_TAG "v1.5"
+    GIT_TAG "b35db4cce50a4b296290b0ae827305cdeb23751e"
 )
 
 # --- Google Benchmark Configuration ---

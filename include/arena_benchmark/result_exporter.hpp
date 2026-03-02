@@ -74,7 +74,8 @@ public:
             root["rows"].push_back(_data_map_to_json(row.data()));
         }
 
-        const auto out_path = _benchmark_logs_dir / _normalize_json_name(file_name);
+        const auto out_path = _resolve_output_path(
+            _benchmark_logs_dir, file_name, "benchmark_repetition_log_board.json");
         _write_json(out_path, root);
         return out_path;
     }
@@ -97,7 +98,8 @@ public:
             root["rows"].push_back(_data_map_to_json(row.data()));
         }
 
-        const auto out_path = _benchmark_results_dir / _normalize_json_name(file_name);
+        const auto out_path = _resolve_output_path(
+            _benchmark_results_dir, file_name, "benchmark_summary_board.json");
         _write_json(out_path, root);
         return out_path;
     }
@@ -120,14 +122,36 @@ private:
         return out;
     }
 
-    static auto _normalize_json_name(std::string file_name) -> std::string {
+    static auto _normalize_json_name(std::string file_name, const std::string& fallback_name) -> std::string {
         if (file_name.empty()) {
-            return "benchmark_board.json";
+            file_name = fallback_name;
         }
-        if (file_name.size() >= 5 && file_name.substr(file_name.size() - 5) == ".json") {
-            return file_name;
+
+        const std::filesystem::path input_path(file_name);
+        if (input_path.is_absolute()) {
+            throw std::invalid_argument("file_name must be a base name, not an absolute path");
         }
-        return file_name + ".json";
+        if (input_path.has_parent_path()) {
+            throw std::invalid_argument("file_name must not contain directory components");
+        }
+
+        std::string name = input_path.filename().string();
+        if (name.empty() || name == "." || name == "..") {
+            throw std::invalid_argument("file_name must be a valid file base name");
+        }
+        if (name.size() < 5 || name.substr(name.size() - 5) != ".json") {
+            name += ".json";
+        }
+        return name;
+    }
+
+    static auto _resolve_output_path(const std::filesystem::path& out_dir,
+                                     const std::string& file_name,
+                                     const std::string& fallback_name) -> std::filesystem::path {
+        if (out_dir.empty()) {
+            throw std::invalid_argument("Output directory must not be empty");
+        }
+        return out_dir / _normalize_json_name(file_name, fallback_name);
     }
 
     static auto _write_json(const std::filesystem::path& out_path, const nlohmann::json& payload) -> void {

@@ -17,6 +17,9 @@ public:
 
     // Set number of repetitions for averaging
     auto repetitions(int n) -> InstanceRegistration& {
+        if (n < 1) {
+            throw std::invalid_argument("repetitions must be >= 1");
+        }
         _num_repetitions = n;
         return *this;
     }
