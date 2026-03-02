@@ -164,8 +164,6 @@ public:
         set_extra_info_width(max_extra + 2);
     }
 
-    static auto finalize() -> void {}
-
 private:
     static RepetitionLogListMeta _table_meta;
 };

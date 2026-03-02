@@ -24,23 +24,24 @@ include(FetchContent)
 
 FetchContent_Declare(
 	nlohmann_json
-	URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+	GIT_REPOSITORY https://github.com/nlohmann/json.git
+	GIT_TAG "v3.12.0"
 )
 
 FetchContent_Declare(
-	argparse
+    argparse
 	GIT_REPOSITORY https://github.com/p-ranav/argparse.git
 	GIT_TAG "v3.2"
 )
 
 FetchContent_Declare(
-	termcolor
+    termcolor
 	GIT_REPOSITORY https://github.com/ikalnytskyi/termcolor.git
 	GIT_TAG "v2.1.0"
 )
 
 FetchContent_Declare(
-	fmt
+    fmt
 	GIT_REPOSITORY https://github.com/fmtlib/fmt.git
 	GIT_TAG "12.1.0"
 )
