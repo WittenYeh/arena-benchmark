@@ -68,7 +68,6 @@ public:
         header_row.push_back(_table_meta.iterations_col().column_name());
         header_row.push_back(_table_meta.real_time_col().column_name());
         header_row.push_back(_table_meta.cpu_time_col().column_name());
-        header_row.push_back(_table_meta.avg_time_per_item_col().column_name());
         header_row.push_back(_table_meta.items_per_second_col().column_name());
         header_row.push_back(_table_meta.is_warm_up_col().column_name());
         header_row.push_back(_table_meta.extra_info_col().column_name());
@@ -80,10 +79,9 @@ public:
         header_table.column(2).format().width(_table_meta.iterations_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         header_table.column(3).format().width(_table_meta.real_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         header_table.column(4).format().width(_table_meta.cpu_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        header_table.column(5).format().width(_table_meta.avg_time_per_item_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        header_table.column(6).format().width(_table_meta.items_per_second_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        header_table.column(7).format().width(_table_meta.is_warm_up_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        header_table.column(8).format().width(_table_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
+        header_table.column(5).format().width(_table_meta.items_per_second_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
+        header_table.column(6).format().width(_table_meta.is_warm_up_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
+        header_table.column(7).format().width(_table_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
     }
 
     static auto init_log_format(ui_table_t& single_log_table, const SingleRepetitionResult& result) -> void {
@@ -108,11 +106,6 @@ public:
         cpu_time_ss << std::fixed << std::setprecision(2) << result.cpu_time() << " " << result.time_unit();
         log_row.push_back(cpu_time_ss.str());
 
-        std::ostringstream avg_time_per_item_ss;
-        avg_time_per_item_ss << std::fixed << std::setprecision(4)
-                             << result.avg_time_per_item() << " " << result.time_unit() << "/item";
-        log_row.push_back(avg_time_per_item_ss.str());
-
         log_row.push_back(result.items_per_second() == 0 ? "---" : std::to_string(result.items_per_second()));
         log_row.push_back(result.is_warm_up() ? "YES" : "NO");
         log_row.push_back(result.extra_info().empty() ? "---" : result.extra_info());
@@ -127,17 +120,15 @@ public:
         single_log_table[0][4].format().font_color(tabulate::Color::blue);
         single_log_table[0][5].format().font_color(tabulate::Color::blue);
         single_log_table[0][6].format().font_color(tabulate::Color::blue);
-        single_log_table[0][7].format().font_color(tabulate::Color::blue);
 
         single_log_table.column(0).format().width(_table_meta.instance_name_col().column_width()).font_align(tabulate::FontAlign::center);
         single_log_table.column(1).format().width(_table_meta.repetition_index_col().column_width()).font_align(tabulate::FontAlign::center);
         single_log_table.column(2).format().width(_table_meta.iterations_col().column_width()).font_align(tabulate::FontAlign::center);
         single_log_table.column(3).format().width(_table_meta.real_time_col().column_width()).font_align(tabulate::FontAlign::center);
         single_log_table.column(4).format().width(_table_meta.cpu_time_col().column_width()).font_align(tabulate::FontAlign::center);
-        single_log_table.column(5).format().width(_table_meta.avg_time_per_item_col().column_width()).font_align(tabulate::FontAlign::center);
-        single_log_table.column(6).format().width(_table_meta.items_per_second_col().column_width()).font_align(tabulate::FontAlign::center);
-        single_log_table.column(7).format().width(_table_meta.is_warm_up_col().column_width()).font_align(tabulate::FontAlign::center);
-        single_log_table.column(8).format().width(_table_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center);
+        single_log_table.column(5).format().width(_table_meta.items_per_second_col().column_width()).font_align(tabulate::FontAlign::center);
+        single_log_table.column(6).format().width(_table_meta.is_warm_up_col().column_width()).font_align(tabulate::FontAlign::center);
+        single_log_table.column(7).format().width(_table_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center);
     }
 
     static auto display_title_and_header(std::ostream& os = std::cout) -> void {

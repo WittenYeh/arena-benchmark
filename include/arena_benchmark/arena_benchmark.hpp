@@ -37,6 +37,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <benchmark/benchmark.h>
+#include <termcolor/termcolor.hpp>
 
 #include <arena_benchmark/arena_reporter.hpp>
 #include <arena_benchmark/instance_registration.hpp>
@@ -90,6 +91,13 @@ public:
             throw std::invalid_argument("warm_up repetitions must be >= 0");
         }
         _num_warm_up_reps = num_warm_up_reps;
+        return *this;
+    }
+
+    // Enable trimmed average calculation (removes min and max values before averaging).
+    // Only effective when repetitions > 5. If repetitions <= 5, a warning will be shown.
+    auto trimmed_avg_enabled(bool enabled) -> ArenaBenchmark& {
+        _trimmed_avg_enabled = enabled;
         return *this;
     }
 
@@ -172,6 +180,7 @@ public:
 private:
     std::list<InstanceRegistration> _instances;
     int _num_warm_up_reps = 0;
+    bool _trimmed_avg_enabled = false;
     std::optional<RepetitionLogList> _last_log_list;
     std::optional<SummaryTable> _last_summary_table;
 
@@ -210,7 +219,31 @@ private:
                 real_times.push_back(r.real_time());
             }
             int n = static_cast<int>(results.size());
-            avg_real  /= n;
+
+            // Calculate trimmed average if enabled
+            if (_trimmed_avg_enabled) {
+                if (n <= 5) {
+                    std::cout << termcolor::yellow
+                              << "Warning: Trimmed average requires more than 5 repetitions. "
+                              << "Benchmark '" << bm_name << "' has only " << n
+                              << " repetitions. Using regular average instead."
+                              << termcolor::reset << std::endl;
+                } else {
+                    // Sort and remove min and max
+                    std::vector<double> sorted_times = real_times;
+                    std::sort(sorted_times.begin(), sorted_times.end());
+
+                    // Remove first (min) and last (max)
+                    double trimmed_sum = 0.0;
+                    for (size_t i = 1; i < sorted_times.size() - 1; ++i) {
+                        trimmed_sum += sorted_times[i];
+                    }
+                    avg_real = trimmed_sum / (n - 2);
+                }
+            } else {
+                avg_real  /= n;
+            }
+
             avg_cpu   /= n;
             avg_items /= n;
 

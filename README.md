@@ -125,13 +125,14 @@ int main(int argc, char** argv) {
                 benchmark::DoNotOptimize(copy);
             }
         })
-        .repetitions(3)                          // Repeat 3 times
+        .repetitions(10)                         // Repeat 10 times (>5 for trimmed avg)
         .workload_scale(10000)                   // Workload scale
         .time_unit(benchmark::kMicrosecond)      // Time unit
         .extra_info("std::sort / 10K");          // Extra info
 
-    // Method chaining: warm up -> run -> export
-    bench.warm_up(1)
+    // Method chaining: enable trimmed avg -> warm up -> run -> export
+    bench.trimmed_avg_enabled(true)              // Enable trimmed average
+         .warm_up(1)
          .run_all(argc, argv)
          .export_results(".");
 
@@ -175,6 +176,29 @@ Set the number of warm-up runs. Warm-up results are shown in the repetition log 
 - `num_warm_up_reps` (int) - Number of warm-up runs, must be >= 0
 
 **Returns:** `ArenaBenchmark&` - Supports method chaining
+
+##### `trimmed_avg_enabled(enabled)`
+
+Enable or disable trimmed average calculation. When enabled, the average is calculated by removing the minimum and maximum values before averaging.
+
+**Parameters:**
+- `enabled` (bool) - Enable (true) or disable (false) trimmed average
+
+**Requirements:**
+- Only effective when repetitions > 5
+- If repetitions ≤ 5, a yellow warning will be displayed and regular average will be used instead
+
+**Returns:** `ArenaBenchmark&` - Supports method chaining
+
+**Example:**
+```cpp
+bench.register_benchmark("BM_Test", test_func)
+     .repetitions(10);  // Must be > 5 for trimmed average
+
+bench.trimmed_avg_enabled(true)  // Enable trimmed average
+     .warm_up(1)
+     .run_all();
+```
 
 ##### `run_all()` / `run_all(argc, argv)`
 

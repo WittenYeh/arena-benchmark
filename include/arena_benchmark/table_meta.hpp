@@ -56,7 +56,6 @@ public:
     auto iterations_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["iterations"] = std::move(value); return *this; }
     auto real_time_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["real_time"] = std::move(value); return *this; }
     auto cpu_time_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["cpu_time"] = std::move(value); return *this; }
-    auto avg_time_per_item_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["avg_time_per_item"] = std::move(value); return *this; }
     auto items_per_second_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["items_per_second"] = std::move(value); return *this; }
     auto is_warm_up_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["is_warm_up"] = std::move(value); return *this; }
     auto extra_info_col(ColumnSetting value) -> RepetitionLogListMeta& { _cols["extra_info"] = std::move(value); return *this; }
@@ -66,7 +65,6 @@ public:
     auto iterations_col() const -> const ColumnSetting& { return _cols.at("iterations"); }
     auto real_time_col() const -> const ColumnSetting& { return _cols.at("real_time"); }
     auto cpu_time_col() const -> const ColumnSetting& { return _cols.at("cpu_time"); }
-    auto avg_time_per_item_col() const -> const ColumnSetting& { return _cols.at("avg_time_per_item"); }
     auto items_per_second_col() const -> const ColumnSetting& { return _cols.at("items_per_second"); }
     auto is_warm_up_col() const -> const ColumnSetting& { return _cols.at("is_warm_up"); }
     auto extra_info_col() const -> const ColumnSetting& { return _cols.at("extra_info"); }
@@ -93,7 +91,6 @@ public:
             .iterations_col(ColumnSetting("Iters", 8))
             .real_time_col(ColumnSetting("Real Time", 18))
             .cpu_time_col(ColumnSetting("CPU Time", 18))
-            .avg_time_per_item_col(ColumnSetting("Avg Time/Item", 22))
             .items_per_second_col(ColumnSetting("Items/sec", 18))
             .is_warm_up_col(ColumnSetting("WarmUp", 8))
             .extra_info_col(ColumnSetting("Extra Info", 20));
