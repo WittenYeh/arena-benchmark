@@ -97,8 +97,8 @@ private:
         header_row.push_back(_meta.instance_name_col().column_name());
         header_row.push_back(_meta.repetitions_col().column_name());
         header_row.push_back(_meta.avg_real_time_col().column_name());
+        header_row.push_back(_meta.median_real_time_col().column_name());
         header_row.push_back(_meta.avg_cpu_time_col().column_name());
-        header_row.push_back(_meta.avg_time_per_item_col().column_name());
         header_row.push_back(_meta.avg_items_per_second_col().column_name());
         header_row.push_back(_meta.extra_info_col().column_name());
         data_table.add_row(header_row);
@@ -106,8 +106,8 @@ private:
         data_table.column(0).format().width(_meta.instance_name_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         data_table.column(1).format().width(_meta.repetitions_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         data_table.column(2).format().width(_meta.avg_real_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        data_table.column(3).format().width(_meta.avg_cpu_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
-        data_table.column(4).format().width(_meta.avg_time_per_item_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
+        data_table.column(3).format().width(_meta.median_real_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
+        data_table.column(4).format().width(_meta.avg_cpu_time_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         data_table.column(5).format().width(_meta.avg_items_per_second_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         data_table.column(6).format().width(_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
     }
@@ -151,18 +151,17 @@ private:
             row.push_back(result.instance_name());
             row.push_back(std::to_string(result.repetitions()));
 
-            std::ostringstream real_time_stream;
-            real_time_stream << std::fixed << std::setprecision(2) << result.avg_real_time() << " " << result.time_unit();
-            row.push_back(real_time_stream.str());
+            std::ostringstream avg_time_stream;
+            avg_time_stream << std::fixed << std::setprecision(2) << result.avg_real_time() << " " << result.time_unit();
+            row.push_back(avg_time_stream.str());
+
+            std::ostringstream median_time_stream;
+            median_time_stream << std::fixed << std::setprecision(2) << result.median_real_time() << " " << result.time_unit();
+            row.push_back(median_time_stream.str());
 
             std::ostringstream cpu_time_stream;
             cpu_time_stream << std::fixed << std::setprecision(2) << result.avg_cpu_time() << " " << result.time_unit();
             row.push_back(cpu_time_stream.str());
-
-            std::ostringstream avg_time_per_item_stream;
-            avg_time_per_item_stream << std::fixed << std::setprecision(4)
-                                     << result.avg_time_per_item() << " " << result.time_unit() << "/item";
-            row.push_back(avg_time_per_item_stream.str());
 
             std::ostringstream items_stream;
             if (result.avg_items_per_second() == 0.0)
@@ -180,11 +179,19 @@ private:
                 hidden_border_rows.push_back(current_row);
             }
 
+            // Apply color coding: green for benchmark names, yellow for Reps, blue for time/data
+            data_table[current_row][0].format().font_color(tabulate::Color::green);
+            data_table[current_row][1].format().font_color(tabulate::Color::yellow);
+            data_table[current_row][2].format().font_color(tabulate::Color::blue);
+            data_table[current_row][3].format().font_color(tabulate::Color::blue);
+            data_table[current_row][4].format().font_color(tabulate::Color::blue);
+            data_table[current_row][5].format().font_color(tabulate::Color::blue);
+
             data_table.column(0).format().width(_meta.instance_name_col().column_width()).font_align(tabulate::FontAlign::center);
             data_table.column(1).format().width(_meta.repetitions_col().column_width()).font_align(tabulate::FontAlign::center);
             data_table.column(2).format().width(_meta.avg_real_time_col().column_width()).font_align(tabulate::FontAlign::center);
-            data_table.column(3).format().width(_meta.avg_cpu_time_col().column_width()).font_align(tabulate::FontAlign::center);
-            data_table.column(4).format().width(_meta.avg_time_per_item_col().column_width()).font_align(tabulate::FontAlign::center);
+            data_table.column(3).format().width(_meta.median_real_time_col().column_width()).font_align(tabulate::FontAlign::center);
+            data_table.column(4).format().width(_meta.avg_cpu_time_col().column_width()).font_align(tabulate::FontAlign::center);
             data_table.column(5).format().width(_meta.avg_items_per_second_col().column_width()).font_align(tabulate::FontAlign::center);
             data_table.column(6).format().width(_meta.extra_info_col().column_width()).font_align(tabulate::FontAlign::center);
 

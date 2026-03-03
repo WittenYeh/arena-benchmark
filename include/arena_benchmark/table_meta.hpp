@@ -116,16 +116,16 @@ public:
     auto instance_name_col(ColumnSetting value) -> SummaryTableMeta& { _cols["instance_name"] = std::move(value); return *this; }
     auto repetitions_col(ColumnSetting value) -> SummaryTableMeta& { _cols["repetitions"] = std::move(value); return *this; }
     auto avg_real_time_col(ColumnSetting value) -> SummaryTableMeta& { _cols["avg_real_time"] = std::move(value); return *this; }
+    auto median_real_time_col(ColumnSetting value) -> SummaryTableMeta& { _cols["median_real_time"] = std::move(value); return *this; }
     auto avg_cpu_time_col(ColumnSetting value) -> SummaryTableMeta& { _cols["avg_cpu_time"] = std::move(value); return *this; }
-    auto avg_time_per_item_col(ColumnSetting value) -> SummaryTableMeta& { _cols["avg_time_per_item"] = std::move(value); return *this; }
     auto avg_items_per_second_col(ColumnSetting value) -> SummaryTableMeta& { _cols["avg_items_per_second"] = std::move(value); return *this; }
     auto extra_info_col(ColumnSetting value) -> SummaryTableMeta& { _cols["extra_info"] = std::move(value); return *this; }
 
     auto instance_name_col() const -> const ColumnSetting& { return _cols.at("instance_name"); }
     auto repetitions_col() const -> const ColumnSetting& { return _cols.at("repetitions"); }
     auto avg_real_time_col() const -> const ColumnSetting& { return _cols.at("avg_real_time"); }
+    auto median_real_time_col() const -> const ColumnSetting& { return _cols.at("median_real_time"); }
     auto avg_cpu_time_col() const -> const ColumnSetting& { return _cols.at("avg_cpu_time"); }
-    auto avg_time_per_item_col() const -> const ColumnSetting& { return _cols.at("avg_time_per_item"); }
     auto avg_items_per_second_col() const -> const ColumnSetting& { return _cols.at("avg_items_per_second"); }
     auto extra_info_col() const -> const ColumnSetting& { return _cols.at("extra_info"); }
 
@@ -136,9 +136,8 @@ public:
     // Returns the display column index for a given key
     auto col_index(const std::string& key) const -> size_t {
         static const std::vector<std::string> order = {
-            "instance_name", "repetitions", "avg_real_time", "avg_cpu_time",
-            "avg_time_per_item",
-            "avg_items_per_second", "extra_info"
+            "instance_name", "repetitions", "avg_real_time", "median_real_time",
+            "avg_cpu_time", "avg_items_per_second", "extra_info"
         };
         for (size_t i = 0; i < order.size(); ++i)
             if (order[i] == key) return i;
@@ -155,9 +154,9 @@ public:
         SummaryTableMeta meta;
         meta.instance_name_col(ColumnSetting("Benchmark", 30))
             .repetitions_col(ColumnSetting("Reps", 6))
-            .avg_real_time_col(ColumnSetting("Real Time", 18))
+            .avg_real_time_col(ColumnSetting("Avg Time", 18))
+            .median_real_time_col(ColumnSetting("Median Time", 18))
             .avg_cpu_time_col(ColumnSetting("CPU Time", 18))
-            .avg_time_per_item_col(ColumnSetting("Avg Time/Item", 22))
             .avg_items_per_second_col(ColumnSetting("Items/sec", 18))
             .extra_info_col(ColumnSetting("Extra Info", 20));
         return meta;

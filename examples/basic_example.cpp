@@ -18,9 +18,7 @@ static auto make_data(size_t n) -> std::vector<int> {
 
 int main(int argc, char** argv) {
     ArenaBenchmark bench;
-    const std::filesystem::path export_root = ".";
-    const auto logs_dir = export_root / "benchmark_logs";
-    const auto results_dir = export_root / "benchmark_results";
+    const std::filesystem::path export_root = std::filesystem::current_path();
 
     auto small  = make_data(1'000);
     auto medium = make_data(10'000);
@@ -48,6 +46,7 @@ int main(int argc, char** argv) {
             }
         })
         .repetitions(3)
+        .workload_scale(10'000)
         .extra_info("std::sort / 10K");
 
     bench.register_benchmark("BM_StdSort_Large",
@@ -59,6 +58,7 @@ int main(int argc, char** argv) {
             }
         })
         .repetitions(3)
+        .workload_scale(100'000)
         .extra_info("std::sort / 100K");
 
     bench.register_benchmark("BM_StableSort_Small",
@@ -70,6 +70,7 @@ int main(int argc, char** argv) {
             }
         })
         .repetitions(3)
+        .workload_scale(1'000)
         .extra_info("std::stable_sort / 1K");
 
     bench.register_benchmark("BM_StableSort_Large",
@@ -81,13 +82,17 @@ int main(int argc, char** argv) {
             }
         })
         .repetitions(3)
+        .workload_scale(100'000)
         .extra_info("std::stable_sort / 100K");
 
     // Chain call: warm up, run benchmarks, then export JSON results.
     bench.warm_up(1).run_all(argc, argv).export_results(export_root);
 
+    const auto logs_dir = export_root / "benchmark_logs";
+    const auto results_dir = export_root / "benchmark_results";
+
     std::cout << "\nExport completed.\n"
-              << "Repetition logs dir: " << std::filesystem::absolute(logs_dir) << '\n'
-              << "Summary results dir: " << std::filesystem::absolute(results_dir) << '\n';
+              << "Repetition logs dir: " << logs_dir << '\n'
+              << "Summary results dir: " << results_dir << '\n';
     return 0;
 }

@@ -48,6 +48,16 @@
 
 namespace arena_benchmark {
 
+/**
+ * @brief Single-threaded benchmark runner with result visualization.
+ *
+ * @warning This class is NOT thread-safe. All benchmarks must be registered
+ *          and executed from a single thread. Multi-threaded benchmark
+ *          registration or execution is explicitly not supported and will
+ *          result in undefined behavior.
+ *
+ * @note For thread-safe benchmarking, use Google Benchmark's native API directly.
+ */
 class ArenaBenchmark {
 public:
     ArenaBenchmark() = default;
@@ -192,24 +202,30 @@ private:
             }
 
             double avg_real = 0, avg_cpu = 0, avg_items = 0;
+            std::vector<double> real_times;
             for (auto& r : results) {
                 avg_real  += r.real_time();
                 avg_cpu   += r.cpu_time();
                 avg_items += static_cast<double>(r.items_per_second());
+                real_times.push_back(r.real_time());
             }
             int n = static_cast<int>(results.size());
             avg_real  /= n;
             avg_cpu   /= n;
             avg_items /= n;
-            const double avg_time_per_item =
-                avg_real / static_cast<double>(matched_inst->workload_scale());
+
+            // Calculate median
+            std::sort(real_times.begin(), real_times.end());
+            double median_real = (real_times.size() % 2 == 0)
+                ? (real_times[real_times.size()/2 - 1] + real_times[real_times.size()/2]) / 2.0
+                : real_times[real_times.size()/2];
 
             MultiRepetitionSummary summary;
             summary.instance_name(matched_inst->name())
                    .repetitions(n)
                    .avg_real_time(avg_real)
+                   .median_real_time(median_real)
                    .avg_cpu_time(avg_cpu)
-                   .avg_time_per_item(avg_time_per_item)
                    .avg_items_per_second(avg_items)
                    .time_unit(results[0].time_unit())
                    .extra_info(matched_inst->extra_info_str());

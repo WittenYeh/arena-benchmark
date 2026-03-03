@@ -20,6 +20,7 @@
 #include <variant>
 #include <sstream>
 #include <stdexcept>
+#include <limits>
 
 namespace arena_benchmark {
 
@@ -81,10 +82,23 @@ public:
     auto error_message(std::string value) -> SingleRepetitionResult& { _data["error_message"] = std::move(value); return *this; }
 
     // Compute and set items_per_second from workload_scale and real_time/time_unit
+    // Uses nanosecond precision to avoid overflow and precision loss
     auto compute_items_per_second(size_t workload_scale) -> SingleRepetitionResult& {
-        double secs = real_time() * _time_unit_to_seconds(time_unit());
-        if (secs > 0)
-            items_per_second(static_cast<int64_t>(workload_scale / secs));
+        double time_in_ns = real_time() * _time_unit_to_nanoseconds(time_unit());
+        if (time_in_ns <= 0) {
+            items_per_second(0);
+            return *this;
+        }
+
+        // Calculate items per nanosecond first to avoid overflow
+        double items_per_ns = static_cast<double>(workload_scale) / time_in_ns;
+        // Convert to items per second (1 second = 1e9 nanoseconds)
+        double items_per_sec = items_per_ns * 1e9;
+
+        // Check for overflow before casting to int64_t
+        items_per_second(items_per_sec > static_cast<double>(std::numeric_limits<int64_t>::max())
+            ? std::numeric_limits<int64_t>::max()
+            : static_cast<int64_t>(items_per_sec));
         return *this;
     }
 
@@ -144,6 +158,14 @@ public:
 private:
     std::map<std::string, Value> _data;  // Flexible data storage
 
+    static auto _time_unit_to_nanoseconds(const std::string& unit) -> double {
+        if (unit == "ns") return 1.0;
+        if (unit == "us") return 1e3;
+        if (unit == "ms") return 1e6;
+        if (unit == "s")  return 1e9;
+        return 1e3;  // default to microseconds
+    }
+
     static auto _time_unit_to_seconds(const std::string& unit) -> double {
         if (unit == "ns") return 1e-9;
         if (unit == "us") return 1e-6;
@@ -160,6 +182,7 @@ public:
         _data["instance_name"] = std::string();
         _data["repetitions"] = 0;
         _data["avg_real_time"] = 0.0;
+        _data["median_real_time"] = 0.0;
         _data["avg_cpu_time"] = 0.0;
         _data["avg_time_per_item"] = 0.0;
         _data["avg_items_per_second"] = 0.0;
@@ -174,6 +197,7 @@ public:
     auto instance_name(std::string value) -> MultiRepetitionSummary& { _data["instance_name"] = std::move(value); return *this; }
     auto repetitions(int value) -> MultiRepetitionSummary& { _data["repetitions"] = value; return *this; }
     auto avg_real_time(double value) -> MultiRepetitionSummary& { _data["avg_real_time"] = value; return *this; }
+    auto median_real_time(double value) -> MultiRepetitionSummary& { _data["median_real_time"] = value; return *this; }
     auto avg_cpu_time(double value) -> MultiRepetitionSummary& { _data["avg_cpu_time"] = value; return *this; }
     auto avg_time_per_item(double value) -> MultiRepetitionSummary& { _data["avg_time_per_item"] = value; return *this; }
     auto avg_items_per_second(double value) -> MultiRepetitionSummary& { _data["avg_items_per_second"] = value; return *this; }
@@ -185,6 +209,7 @@ public:
     auto instance_name() const -> const std::string& { return std::get<std::string>(_data.at("instance_name")); }
     auto repetitions() const -> int { return std::get<int>(_data.at("repetitions")); }
     auto avg_real_time() const -> double { return std::get<double>(_data.at("avg_real_time")); }
+    auto median_real_time() const -> double { return std::get<double>(_data.at("median_real_time")); }
     auto avg_cpu_time() const -> double { return std::get<double>(_data.at("avg_cpu_time")); }
     auto avg_time_per_item() const -> double { return std::get<double>(_data.at("avg_time_per_item")); }
     auto avg_items_per_second() const -> double { return std::get<double>(_data.at("avg_items_per_second")); }

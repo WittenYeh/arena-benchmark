@@ -25,6 +25,11 @@
 - 🎯 **Fluent API** - Method chaining for clean and elegant code
 - 🔧 **Flexible Configuration** - Customizable repetitions, time units, workload scales, etc.
 
+## ⚠️ Important Notes
+
+- **Single-threaded Only**: ArenaBenchmark is NOT thread-safe. All benchmarks must be registered and executed from a single thread. For multi-threaded benchmarking, use Google Benchmark's native API directly.
+- **Workload Scale**: Always set `.workload_scale()` when using derived metrics (items/sec, time/item) to ensure accurate calculations.
+
 ## 📦 Dependencies
 
 The project uses CMake FetchContent to automatically manage dependencies:
