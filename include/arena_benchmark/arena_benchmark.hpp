@@ -101,6 +101,24 @@ public:
         return *this;
     }
 
+    // Get the current trimmed average enabled state.
+    auto trimmed_avg_enabled() const -> bool {
+        return _trimmed_avg_enabled;
+    }
+
+    // Enable highlighting of best two results in Summary Board.
+    // When enabled, the best result is highlighted with red background,
+    // and the second best is highlighted with yellow background.
+    auto highlight_best_enabled(bool enabled) -> ArenaBenchmark& {
+        _highlight_best_enabled = enabled;
+        return *this;
+    }
+
+    // Get the current highlight best enabled state.
+    auto highlight_best_enabled() const -> bool {
+        return _highlight_best_enabled;
+    }
+
     // Run all benchmarks (uses dummy argc/argv)
     auto run_all() -> ArenaBenchmark& {
         int argc = 1;
@@ -116,6 +134,9 @@ public:
         // Auto-size columns based on registered benchmark data
         RepetitionLogListVisualizer::auto_size_columns(_instances);
         SummaryTableVisualizer::auto_size_columns(_instances);
+
+        // Configure visualizer settings
+        SummaryTableVisualizer::highlight_best_enabled(_highlight_best_enabled);
 
         ArenaReporter reporter;
         RepetitionLogList log_list;
@@ -181,6 +202,7 @@ private:
     std::list<InstanceRegistration> _instances;
     int _num_warm_up_reps = 0;
     bool _trimmed_avg_enabled = false;
+    bool _highlight_best_enabled = true;  // Default: enabled
     std::optional<RepetitionLogList> _last_log_list;
     std::optional<SummaryTable> _last_summary_table;
 

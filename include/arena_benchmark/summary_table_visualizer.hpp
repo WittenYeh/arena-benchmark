@@ -26,6 +26,10 @@ public:
         _meta.extra_info_col(ColumnSetting("Extra Info", width));
     }
 
+    static auto highlight_best_enabled(bool enabled) -> void {
+        _highlight_best_enabled = enabled;
+    }
+
     template<typename InstanceRange>
     static auto auto_size_columns(const InstanceRange& instances) -> void {
         size_t max_name = 0, max_extra = 0;
@@ -33,6 +37,12 @@ public:
             max_name  = std::max(max_name,  inst.name().size());
             max_extra = std::max(max_extra, inst.extra_info_str().size());
         }
+        // Consider the column header width as well
+        constexpr size_t benchmark_header_len = 9;  // "Benchmark"
+        constexpr size_t extra_info_header_len = 10; // "Extra Info"
+        max_name = std::max(max_name, benchmark_header_len);
+        max_extra = std::max(max_extra, extra_info_header_len);
+
         set_benchmark_name_width(max_name + 2);
         set_extra_info_width(max_extra + 2);
     }
@@ -48,10 +58,12 @@ public:
         const auto& group_by_key = summary_table.get_group_by_key();
         _fill_data_table(*data_table, results, group_by_key);
 
-        auto [rt_best, rt_second] = summary_table.find_best_two("avg_real_time", true);
-        auto [ips_best, ips_second] = summary_table.find_best_two("avg_items_per_second", false);
-        _highlight_best_two(*data_table, rt_best, rt_second, "avg_real_time");
-        _highlight_best_two(*data_table, ips_best, ips_second, "avg_items_per_second");
+        if (_highlight_best_enabled) {
+            auto [rt_best, rt_second] = summary_table.find_best_two("avg_real_time", true);
+            auto [ips_best, ips_second] = summary_table.find_best_two("avg_items_per_second", false);
+            _highlight_best_two(*data_table, rt_best, rt_second, "avg_real_time");
+            _highlight_best_two(*data_table, ips_best, ips_second, "avg_items_per_second");
+        }
 
         std::stringstream colored_stream;
         termcolor::colorize(colored_stream);
@@ -69,6 +81,7 @@ public:
 
 private:
     static SummaryTableMeta _meta;
+    static bool _highlight_best_enabled;
 
     static void _init_table_format(ui_table_t& data_table, ui_table_t& wrapper_table) {
         wrapper_table.format()
@@ -205,5 +218,6 @@ private:
 };
 
 inline SummaryTableMeta SummaryTableVisualizer::_meta = SummaryTableMeta::default_meta();
+inline bool SummaryTableVisualizer::_highlight_best_enabled = true;
 
 } // namespace arena_benchmark

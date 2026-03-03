@@ -177,27 +177,51 @@ Set the number of warm-up runs. Warm-up results are shown in the repetition log 
 
 **Returns:** `ArenaBenchmark&` - Supports method chaining
 
-##### `trimmed_avg_enabled(enabled)`
+##### `trimmed_avg_enabled(enabled)` / `trimmed_avg_enabled()`
 
 Enable or disable trimmed average calculation. When enabled, the average is calculated by removing the minimum and maximum values before averaging.
 
-**Parameters:**
+**Setter Parameters:**
 - `enabled` (bool) - Enable (true) or disable (false) trimmed average
+
+**Getter Returns:** `bool` - Current trimmed average enabled state
 
 **Requirements:**
 - Only effective when repetitions > 5
 - If repetitions ≤ 5, a yellow warning will be displayed and regular average will be used instead
 
-**Returns:** `ArenaBenchmark&` - Supports method chaining
+**Setter Returns:** `ArenaBenchmark&` - Supports method chaining
 
 **Example:**
 ```cpp
 bench.register_benchmark("BM_Test", test_func)
      .repetitions(10);  // Must be > 5 for trimmed average
 
-bench.trimmed_avg_enabled(true)  // Enable trimmed average
-     .warm_up(1)
-     .run_all();
+bench.trimmed_avg_enabled(true);  // Enable trimmed average
+bool enabled = bench.trimmed_avg_enabled();  // Get current state
+
+bench.warm_up(1).run_all();
+```
+
+##### `highlight_best_enabled(enabled)` / `highlight_best_enabled()`
+
+Enable or disable highlighting of best two results in the Summary Board. When enabled, the best result is highlighted with red background, and the second best is highlighted with yellow background.
+
+**Setter Parameters:**
+- `enabled` (bool) - Enable (true) or disable (false) highlighting
+
+**Getter Returns:** `bool` - Current highlight enabled state
+
+**Default:** `true` (enabled)
+
+**Setter Returns:** `ArenaBenchmark&` - Supports method chaining
+
+**Example:**
+```cpp
+bench.highlight_best_enabled(false);  // Disable highlighting
+bool enabled = bench.highlight_best_enabled();  // Get current state
+
+bench.run_all();
 ```
 
 ##### `run_all()` / `run_all(argc, argv)`

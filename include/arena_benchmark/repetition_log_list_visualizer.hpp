@@ -161,6 +161,12 @@ public:
             max_name  = std::max(max_name,  inst.name().size());
             max_extra = std::max(max_extra, inst.extra_info_str().size());
         }
+        // Consider the column header width as well
+        constexpr size_t benchmark_header_len = 9;  // "Benchmark"
+        constexpr size_t extra_info_header_len = 10; // "Extra Info"
+        max_name = std::max(max_name, benchmark_header_len);
+        max_extra = std::max(max_extra, extra_info_header_len);
+
         set_benchmark_name_width(max_name + 2);
         set_extra_info_width(max_extra + 2);
     }
