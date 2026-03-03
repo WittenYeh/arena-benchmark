@@ -73,7 +73,7 @@ public:
         header_row.push_back(_table_meta.is_warm_up_col().column_name());
         header_row.push_back(_table_meta.extra_info_col().column_name());
         header_table.add_row(header_row);
-        header_table.row(0).format().hide_border_top();
+        header_table.row(0).format().hide_border_top().font_style({tabulate::FontStyle::bold});
 
         header_table.column(0).format().width(_table_meta.instance_name_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
         header_table.column(1).format().width(_table_meta.repetition_index_col().column_width()).font_align(tabulate::FontAlign::center).font_style({tabulate::FontStyle::bold});
@@ -97,7 +97,7 @@ public:
 
         ui_row_t log_row;
         log_row.push_back(result.instance_name());
-        log_row.push_back(std::to_string(result.repetition_index()));
+        log_row.push_back(result.is_warm_up() ? "-" : std::to_string(result.repetition_index()));
         log_row.push_back(std::to_string(result.iterations()));
 
         std::ostringstream real_time_ss;
@@ -114,10 +114,20 @@ public:
         log_row.push_back(avg_time_per_item_ss.str());
 
         log_row.push_back(result.items_per_second() == 0 ? "---" : std::to_string(result.items_per_second()));
-        log_row.push_back(result.is_warm_up() ? "Y" : "N");
+        log_row.push_back(result.is_warm_up() ? "YES" : "NO");
         log_row.push_back(result.extra_info().empty() ? "---" : result.extra_info());
         single_log_table.add_row(log_row);
         single_log_table.row(0).format().hide_border_top();
+
+        // Apply color coding: green for benchmark names, yellow for Rep#, blue for time/data
+        single_log_table[0][0].format().font_color(tabulate::Color::green);
+        single_log_table[0][1].format().font_color(tabulate::Color::yellow);
+        single_log_table[0][2].format().font_color(tabulate::Color::blue);
+        single_log_table[0][3].format().font_color(tabulate::Color::blue);
+        single_log_table[0][4].format().font_color(tabulate::Color::blue);
+        single_log_table[0][5].format().font_color(tabulate::Color::blue);
+        single_log_table[0][6].format().font_color(tabulate::Color::blue);
+        single_log_table[0][7].format().font_color(tabulate::Color::blue);
 
         single_log_table.column(0).format().width(_table_meta.instance_name_col().column_width()).font_align(tabulate::FontAlign::center);
         single_log_table.column(1).format().width(_table_meta.repetition_index_col().column_width()).font_align(tabulate::FontAlign::center);
