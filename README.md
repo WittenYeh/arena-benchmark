@@ -42,6 +42,57 @@ The project uses CMake FetchContent to automatically manage dependencies:
 
 ## 🚀 Quick Start
 
+### Using as a Third-Party Library
+
+Arena Benchmark is a header-only library that can be easily integrated into your project using CMake FetchContent.
+
+#### Method 1: CMake FetchContent (Recommended)
+
+Add the following to your `CMakeLists.txt`:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(
+    arena_benchmark
+    GIT_REPOSITORY https://github.com/WittenYeh/arena-benchmark.git
+    GIT_TAG main  # or specify a specific tag/commit
+)
+
+FetchContent_MakeAvailable(arena_benchmark)
+
+# Link to your target
+target_link_libraries(your_target PRIVATE arena_benchmark)
+```
+
+#### Method 2: Git Submodule
+
+```bash
+# Add as submodule
+git submodule add https://github.com/WittenYeh/arena-benchmark.git third_party/arena-benchmark
+git submodule update --init --recursive
+
+# In your CMakeLists.txt
+add_subdirectory(third_party/arena-benchmark)
+target_link_libraries(your_target PRIVATE arena_benchmark)
+```
+
+#### Method 3: Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/WittenYeh/arena-benchmark.git
+cd arena-benchmark
+
+# Copy headers to your include path
+cp -r include/arena_benchmark /usr/local/include/
+
+# In your CMakeLists.txt, manually link dependencies:
+# benchmark, nlohmann_json, tabulate, fmt, termcolor
+```
+
+**Note:** Arena Benchmark automatically manages its dependencies (Google Benchmark, nlohmann/json, tabulate, fmt, termcolor) via CMake FetchContent, so you don't need to install them separately.
+
 ### Build the Project
 
 ```bash
