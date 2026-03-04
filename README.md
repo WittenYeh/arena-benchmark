@@ -307,7 +307,7 @@ Set extra information string displayed in result tables.
 
 Shows detailed results for each run:
 
-![Benchmark Repetition Log Board](assets/benchmark_repetition_log_board.png)
+![Benchmark Repetition Log Board](assets/repetition-log-board.png)
 
 **Column Descriptions:**
 - **Benchmark** - Test name
@@ -324,7 +324,7 @@ Shows detailed results for each run:
 
 Shows averaged results across multiple runs with highlighting for best and second-best:
 
-![Benchmark Summary Board](assets/benchmark_summary_board.png)
+![Benchmark Summary Board](assets/benchmark-summary-board.png)
 
 **Highlighting Rules:**
 - 🔴 **Red Background** - Best result (shortest Real Time / highest Items/sec)
